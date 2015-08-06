@@ -64,4 +64,12 @@ describe("captureobject test", function() {
 		var root = captureobject(testObj, 1);
 		assert.equal(undefined, root.children["sub"].children["s1"]);
 	});
+
+	it("it should work for hidden properties", function() {
+
+		var testObj = [1, 2, 3]; // length is the hidden property of array
+
+		var root = captureobject(testObj, 1);
+		assert.equal(root.children["length"].pointer, 3);
+	});
 });
