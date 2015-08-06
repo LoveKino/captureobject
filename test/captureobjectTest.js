@@ -69,7 +69,35 @@ describe("captureobject test", function() {
 
 		var testObj = [1, 2, 3]; // length is the hidden property of array
 
-		var root = captureobject(testObj, 1);
+		var root = captureobject(testObj);
 		assert.equal(root.children["length"].pointer, 3);
 	});
+
+	it("it should work for Node::path", function() {
+
+		var testObj = {
+			a: {
+				b: 1
+			},
+			c: [{
+				d: 2
+			}, 3],
+			e: true
+		}
+
+		testObj.f = testObj;
+
+		var root = captureobject(testObj);
+		assert.equal(root.children["a"].path, "a");
+		assert.equal(root.children["c"].path, "c");
+		assert.equal(root.children["e"].path, "e");
+
+		assert.equal(root.children["a"].children["b"].path, "a.b");
+		assert.equal(root.children["c"].children["0"].path, "c.0");
+		assert.equal(root.children["c"].children["1"].path, "c.1");
+
+		assert.equal(root.children["c"].children["0"].children["d"].path, "c.0.d");
+
+	});
+
 });
