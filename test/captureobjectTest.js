@@ -100,4 +100,26 @@ describe("captureobject test", function() {
 
 	});
 
+	it("it should work for Node::name", function() {
+
+		var testObj = {
+			a: {
+				b: 1
+			},
+			c: [{
+				d: 2
+			}, 3],
+			e: true
+		}
+
+		testObj.f = testObj;
+
+		var root = captureobject(testObj);
+		assert.equal(root.name, "");
+		assert.equal(root.children["a"].name, "a");
+		assert.equal(root.children["c"].name, "c");
+		assert.equal(root.children["c"].children["0"].name, 0);
+		assert.equal(root.children["c"].children["0"].children["d"].name, "d");
+	});
+
 });
