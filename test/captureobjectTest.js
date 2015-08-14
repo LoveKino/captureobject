@@ -61,7 +61,9 @@ describe("captureobject test", function() {
 			}
 		}
 
-		var root = captureobject(testObj, 1);
+		var root = captureobject(testObj, {
+			maxDepth: 1
+		});
 		assert.equal(undefined, root.children["sub"].children["s1"]);
 	});
 
@@ -120,6 +122,36 @@ describe("captureobject test", function() {
 		assert.equal(root.children["c"].name, "c");
 		assert.equal(root.children["c"].children["0"].name, 0);
 		assert.equal(root.children["c"].children["0"].children["d"].name, "d");
+	});
+
+	it("it should work for ignore list", function() {
+
+		var testObj = {
+			a: {
+				b: 1
+			},
+			c: [{
+				d: 2
+			}, 3],
+			e: true,
+			f: {
+				g: 100
+			}
+		}
+
+		testObj.f = testObj;
+
+		var root = captureobject(testObj, {
+			ignore: ["a", "c.0.d", /e/, function(path) {
+				return path === "f.g";
+			}]
+		});
+		assert.equal(root.children["a"], undefined);
+		assert.equal(root.children["e"], undefined);
+		assert.equal(root.children["f"].path, "f");
+		assert.equal(root.children["f"].children["g"], undefined);
+		assert.equal(root.children["c"].children["1"].pointer, 3);
+		assert.equal(root.children["c"].children["0"].children["d"], undefined);
 	});
 
 });
